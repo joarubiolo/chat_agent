@@ -8,43 +8,40 @@ const port = process.env.PORT || 3000;
 const workflowPath = path.join(__dirname, 'workflow.json');
 const workflowData = JSON.parse(fs.readFileSync(workflowPath, 'utf8'));
 
+// Middleware
 app.use(express.json());
+app.use(express.static('public')); // Servir archivos estáticos
 
-// Endpoint principal
-app.get('/', (req, res) => {
-  res.json({
-    message: '✅ n8n Workflow Agent running on Render',
-    status: 'active',
-    workflowName: workflowData.name || 'Unnamed Workflow',
-    workflowId: workflowData.id,
-    totalNodes: workflowData.nodes ? workflowData.nodes.length : 0
-  });
-});
-
-// Endpoint para ver el workflow
-app.get('/workflow', (req, res) => {
-  res.json(workflowData);
-});
-
-// Endpoint de health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
-});
-
-// Si quieres ejecutar algún nodo específico
-app.post('/execute', async (req, res) => {
+// Endpoint para el chat
+app.post('/api/chat', async (req, res) => {
   try {
-    // Aquí iría la lógica para ejecutar partes del workflow
+    const { message } = req.body;
+    
+    // Aquí procesarías el mensaje con tu workflow de n8n
+    // Por ahora simulamos una respuesta
+    const response = await processMessageWithWorkflow(message);
+    
     res.json({ 
-      message: 'Execution endpoint', 
-      receivedData: req.body 
+      success: true, 
+      response,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// Simulación de procesamiento con n8n
+async function processMessageWithWorkflow(message) {
+  // Esto es temporal - luego integrarás con n8n-core
+  return `He recibido tu mensaje: "${message}". Mi workflow "${workflowData.name}" está listo para procesarlo.`;
+}
+
+// Servir el frontend
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(port, () => {
-  console.log(`🚀 n8n Agent running on port ${port}`);
-  console.log(`📋 Workflow: ${workflowData.name}`);
+  console.log(`🚀 n8n Agent with chat running on port ${port}`);
 });
