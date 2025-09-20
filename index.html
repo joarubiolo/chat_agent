@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Página Simple</title>
+  <title>Mi Página con Chat</title>
   <link rel="stylesheet" href="static/style.css">
+
+  <!-- Estilos del chat de n8n -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -12,49 +15,50 @@
   </header>
 
   <main>
-    <p>Esta es una página web muy simple hecha en HTML, CSS y JavaScript.</p>
-    <button onclick="saludar()">Haz clic aquí</button>
+    <p>Ahora puedes hablar con nuestro asistente virtual:</p>
+    <!-- Aquí aparecerá el chat -->
+    <div id="n8n-chat"></div>
   </main>
 
   <footer>
-    <p>Desarrollado con ❤️ para Render</p>
+    <p>Desarrollado con ❤️ para Render + n8n</p>
   </footer>
 
   <script src="static/script.js"></script>
+
+  <!-- Script del chat -->
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+    createChat({
+      webhookUrl: 'https://n8n-app-fv17.onrender.com/webhook/569d0bad-d2ed-4c1e-979f-0f7129b5f999/chat',
+      webhookConfig: {
+        method: 'POST',
+        headers: {}
+      },
+      target: '#n8n-chat',
+      mode: 'window',
+      chatInputKey: 'chatInput',
+      chatSessionKey: 'sessionId',
+      loadPreviousSession: true,
+      metadata: {},
+      showWelcomeScreen: false,
+      defaultLanguage: 'vi',
+      initialMessages: [
+        'Hi there! 👋',
+        'My name is Nathan. How can I assist you today?'
+      ],
+      i18n: {
+        en: {
+          title: 'Hi there! 👋',
+          subtitle: "Start a chat. We're here to help you 24/7.",
+          footer: '',
+          getStarted: 'New Conversation',
+          inputPlaceholder: 'Type your question..',
+        },
+      },
+      enableStreaming: false,
+    });
+  </script>
 </body>
 </html>
-
-<link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-<script type="module">
-	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-
-createChat({
-	webhookUrl: 'http://localhost:5678/webhook/569d0bad-d2ed-4c1e-979f-0f7129b5f999/chat',
-	webhookConfig: {
-		method: 'POST',
-		headers: {}
-	},
-	target: '#n8n-chat',
-	mode: 'window',
-	chatInputKey: 'chatInput',
-	chatSessionKey: 'sessionId',
-	loadPreviousSession: true,
-	metadata: {},
-	showWelcomeScreen: false,
-	defaultLanguage: 'en',
-	initialMessages: [
-		'Hi there! 👋',
-		'My name is Nathan. How can I assist you today?'
-	],
-	i18n: {
-		en: {
-			title: 'Hi there! 👋',
-			subtitle: "Start a chat. We're here to help you 24/7.",
-			footer: '',
-			getStarted: 'New Conversation',
-			inputPlaceholder: 'Type your question..',
-		},
-	},
-	enableStreaming: false,
-});
-</script>
