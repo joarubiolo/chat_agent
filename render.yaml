@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: mi-pagina
+    env: static
+    staticPublishPath: .
+    buildCommand: ""
